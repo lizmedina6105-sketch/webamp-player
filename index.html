@@ -1,1 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <body style="margin:0; background:black;">
+    <div id="app" style="height: 100vh"></div>
 
+    <script type="module">
+      import Webamp from "https://unpkg.com/webamp@^2";
+
+      const webamp = new Webamp({
+        initialTracks: [{
+          metaData: {
+            artist: "Example",
+            title: "Sample Track",
+          },
+          url: "https://cdn.jsdelivr.net/gh/captbaritone/webamp@master/mp3/llama-2.91.mp3",
+        }],
+      });
+
+      webamp.renderWhenReady(document.getElementById("app"));
+    </script>
+  </body>
+</html>

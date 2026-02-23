@@ -1,24 +1,25 @@
 <!--ipod starts-->
-<style>
-  /* Page background white */
-  body {
-    background:white;
-    margin:0;
-  }
-
-  /* Make the album poster bigger, override any other CSS */
-  #poster {
-    width: 120% !important;
-    max-width: 100% !important;
-    border-radius:10px;
-    display:block;
-    margin:0 auto;
-  }
-</style>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/ipod/style.css">
 <script src="/ipod/ipod.js"></script>
+
+<!-- override styles after CSS load -->
+<style>
+  /* Force page background white */
+  body {
+    background:white !important;
+    margin:0 !important;
+  }
+
+  /* Force album image bigger */
+  #poster {
+    width: 120% !important;
+    max-width: 100% !important;
+    border-radius:10px !important;
+    display:block !important;
+    margin:0 auto !important;
+  }
+</style>
 
 <!--ipod-->
 <div class="ipod">

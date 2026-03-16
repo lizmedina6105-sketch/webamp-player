@@ -1,122 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>iPod Player - Black Swan</title>
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <style>
-    body {
-      margin:0;
-      background:#fff; /* white background */
-      font-family:sans-serif;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-    }
-    .ipod {
-      width:200px; /* compact size */
-      background:#ccc;
-      border-radius:20px;
-      overflow:hidden;
-      box-shadow:0 4px 8px rgba(0,0,0,0.5);
-    }
-    .screen { background:#eee; padding:5px; }
-    .music { text-align:center; margin-top:5px; }
-    #poster { width:100%; border-radius:10px; }
-    .content { margin-top:5px; }
-    .content b { display:block; font-size:12px; } /* smaller title */
-    .content p { margin:2px 0; font-size:10px; color:#333; } /* smaller artist/date */
-    .bar-box { display:flex; align-items:center; font-size:9px; margin-top:5px; } /* smaller time labels */
-    .bar { flex:1; height:5px; background:#bbb; margin:0 5px; position:relative; border-radius:3px; }
-    .progress { height:5px; background:#ff0000; width:0%; border-radius:3px; }
-    .controls { display:flex; justify-content:space-around; align-items:center; padding:5px 0; background:#ddd; }
-    .controls button, .controls i { cursor:pointer; font-size:14px; }
-  </style>
+<meta charset="UTF-8">
+<title>BTS Player</title>
+<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/all.css'>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+*:focus{outline:none;}
+body{font-family:Helvetica, Arial;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;color:white;}
+#player{position:relative;z-index:3;width:400px;background:#1c1c1c;border-radius:20px;padding:20px;box-shadow:0 0 30px #000;}
+#player-track{background:#2a2a2a;border-radius:15px;padding:20px;margin-bottom:20px;position:relative;}
+#album-name{font-size:18px;font-weight:bold;margin-bottom:5px;}
+#track-name{font-size:14px;color:#ccc;margin-bottom:10px;}
+#track-time{display:flex;justify-content:space-between;font-size:12px;margin-bottom:10px;}
+#seek-bar-container{width:100%;height:6px;background:#333;border-radius:3px;cursor:pointer;position:relative;}
+#seek-bar{height:100%;background:#f86d92;width:0;border-radius:3px;position:absolute;top:0;left:0;}
+#album-art{width:120px;height:120px;margin:0 auto;border-radius:50%;overflow:hidden;box-shadow:0 0 20px #000;margin-bottom:20px;}
+#album-art img{width:100%;height:100%;opacity:0;position:absolute;top:0;left:0;transition:0.3s;}
+#album-art img.active{opacity:1;animation:rotateAlbumArt 3s linear infinite forwards;}
+@keyframes rotateAlbumArt{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+#player-controls{display:flex;justify-content:space-around;}
+.button{background:#2a2a2a;padding:15px;border-radius:10px;cursor:pointer;transition:0.2s;}
+.button i{color:#ccc;font-size:20px;}
+.button:hover{background:#444;}
+.button:hover i{color:#f86d92;}
+</style>
 </head>
 <body>
 
-<div class="ipod">
-  <div class="screen">
-    <div style="background: linear-gradient(to bottom, #fff 0%, #9e9e9e 100%);
-                border-bottom:1px solid #5c5c5c; border-right:2px solid #000; border-left:2px solid #000;
-                font-size:12px; padding:1px;">now playing</div>
-
-    <div class="music">
-      <audio id="myMusic" type="audio/mp3">
-        <source src="https://files.catbox.moe/y0nky9.mp3" type="audio/mp3">
-      </audio>
-      <!-- Album Art -->
-      <img id="poster" src="https://files.catbox.moe/ok5umv.jpg">
-      <div class="content">
-        <b class="name">Black Swan</b>
-        <p class="singer">BTS</p>
-        <p class="date">2020</p>
-      </div>
+<div id="player">
+    <div id="album-art">
+        <img src="https://files.catbox.moe/spjxpy.jpg" class="active" id="_1">
+        <img src="https://i.pinimg.com/736x/5b/8f/1f/5b8f1f97d79fc05f3d0b62a0a02f3673.jpg" id="_2">
+        <img src="https://i.pinimg.com/736x/8c/8f/44/8c8f44e342d3dfd68e16e21d0f4e57aa.jpg" id="_3">
+        <img src="https://i.pinimg.com/736x/33/11/aa/3311aa9b1d9d1cdd0f514d0b9924f0da.jpg" id="_4">
+        <img src="https://i.pinimg.com/736x/92/da/ab/92daab9fce7c2dc2d41a0f598c0db21b.jpg" id="_5">
     </div>
 
-    <div class="bar-box">
-      <p class="current-time">0:00</p>
-      <div class="bar">
-        <div class="progress"></div>
-      </div>
-      <p class="duration-time">5:36</p>
+    <div id="player-track">
+        <div id="album-name">BTS</div>
+        <div id="track-name"></div>
+        <div id="track-time">
+            <span id="current-time">00:00</span>
+            <span id="track-length">00:00</span>
+        </div>
+        <div id="seek-bar-container">
+            <div id="seek-bar"></div>
+        </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <button class="menu">MENU</button>
-    <i class="fa fa-fast-backward" id="backward"></i>
-    <i class="fa fa-fast-forward" id="forward"></i>
-    <button class="play-pause-btn">
-      <i class="fa fa-play" id="play-icon"></i>
-      <i class="fa fa-pause" id="pause-icon" style="display:none;"></i>
-    </button>
-  </div>
+    <div id="player-controls">
+        <div class="button" id="play-previous"><i class="fas fa-backward"></i></div>
+        <div class="button" id="play-pause"><i class="fas fa-play"></i></div>
+        <div class="button" id="play-next"><i class="fas fa-forward"></i></div>
+    </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script>
-  const audio = document.getElementById("myMusic");
-  const playBtn = document.querySelector(".play-pause-btn");
-  const playIcon = document.getElementById("play-icon");
-  const pauseIcon = document.getElementById("pause-icon");
-  const progress = document.querySelector(".progress");
-  const currentTimeElem = document.querySelector(".current-time");
-  const durationElem = document.querySelector(".duration-time");
+$(function(){
+    var albums = ['BTS','BTS','BTS','BTS','BTS']; // Album title fixed as BTS
+    var trackNames = ['Hip Hop Pile','Outro: Do You Think It Makes Sense?','MIC Drop','Black Swan','Louder than Bombs'];
+    var albumArtworks = ['_1','_2','_3','_4','_5'];
+    var trackUrl = [
+        'https://files.catbox.moe/r0ffvt.mp3',
+        'https://files.catbox.moe/1ano71.mp3',
+        'https://files.catbox.moe/tau9rg.mp3',
+        'https://files.catbox.moe/y0nky9.mp3',
+        'https://files.catbox.moe/af9omq.mp3'
+    ];
 
-  // Update progress bar and current time
-  audio.addEventListener("timeupdate", () => {
-    const percent = (audio.currentTime / audio.duration) * 100;
-    progress.style.width = percent + "%";
-    const m = Math.floor(audio.currentTime/60);
-    const s = Math.floor(audio.currentTime%60).toString().padStart(2,"0");
-    currentTimeElem.textContent = `${m}:${s}`;
-  });
+    var currIndex = 0;
+    var audio = new Audio(trackUrl[currIndex]);
 
-  // Set total duration
-  audio.addEventListener("loadedmetadata", () => {
-    const m = Math.floor(audio.duration/60);
-    const s = Math.floor(audio.duration%60).toString().padStart(2,"0");
-    durationElem.textContent = `${m}:${s}`;
-  });
-
-  // Play/pause button
-  playBtn.addEventListener("click", () => {
-    if(audio.paused){
-      audio.play().catch(()=>{ alert("Click play if autoplay is blocked."); });
-      playIcon.style.display="none";
-      pauseIcon.style.display="inline";
-    } else {
-      audio.pause();
-      playIcon.style.display="inline";
-      pauseIcon.style.display="none";
+    function updateTrackInfo(){
+        $('#album-name').text(albums[currIndex]); // always BTS
+        $('#track-name').text(trackNames[currIndex]);
+        $('#album-art img').removeClass('active');
+        $('#'+albumArtworks[currIndex]).addClass('active');
     }
-  });
 
-  // Forward/backward skip 10 seconds
-  document.getElementById("forward").addEventListener("click", () => { audio.currentTime += 10; });
-  document.getElementById("backward").addEventListener("click", () => { audio.currentTime -= 10; });
+    function playTrack(){
+        audio.play();
+        $('#play-pause i').attr('class','fas fa-pause');
+    }
+
+    function pauseTrack(){
+        audio.pause();
+        $('#play-pause i').attr('class','fas fa-play');
+    }
+
+    function nextTrack(){
+        currIndex = (currIndex + 1) % trackUrl.length;
+        audio.src = trackUrl[currIndex];
+        updateTrackInfo();
+        playTrack();
+    }
+
+    function prevTrack(){
+        currIndex = (currIndex - 1 + trackUrl.length) % trackUrl.length;
+        audio.src = trackUrl[currIndex];
+        updateTrackInfo();
+        playTrack();
+    }
+
+    $('#play-pause').click(function(){
+        if(audio.paused){ playTrack(); }else{ pauseTrack(); }
+    });
+
+    $('#play-next').click(nextTrack);
+    $('#play-previous').click(prevTrack);
+
+    audio.ontimeupdate = function(){
+        var progress = (audio.currentTime / audio.duration) * 100;
+        $('#seek-bar').css('width',progress+'%');
+
+        var curMin = Math.floor(audio.currentTime/60);
+        var curSec = Math.floor(audio.currentTime%60);
+        if(curMin<10) curMin='0'+curMin;
+        if(curSec<10) curSec='0'+curSec;
+        $('#current-time').text(curMin+':'+curSec);
+
+        var durMin = Math.floor(audio.duration/60);
+        var durSec = Math.floor(audio.duration%60);
+        if(durMin<10) durMin='0'+durMin;
+        if(durSec<10) durSec='0'+durSec;
+        if(!isNaN(durMin) && !isNaN(durSec)) $('#track-length').text(durMin+':'+durSec);
+    };
+
+    $('#seek-bar-container').click(function(e){
+        var pos = e.pageX - $(this).offset().left;
+        var percent = pos / $(this).width();
+        audio.currentTime = percent * audio.duration;
+    });
+
+    updateTrackInfo();
+});
 </script>
 
 </body>

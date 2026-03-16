@@ -15,9 +15,9 @@ body{font-family:Helvetica, Arial;background:#000;display:flex;justify-content:c
 #track-time{display:flex;justify-content:space-between;font-size:12px;margin-bottom:10px;}
 #seek-bar-container{width:100%;height:6px;background:#333;border-radius:3px;cursor:pointer;position:relative;}
 #seek-bar{height:100%;background:#f86d92;width:0;border-radius:3px;position:absolute;top:0;left:0;}
-#album-art{width:120px;height:120px;margin:0 auto;border-radius:50%;overflow:hidden;box-shadow:0 0 20px #000;margin-bottom:20px;}
+#album-art{width:120px;height:120px;margin:0 auto;border-radius:50%;overflow:hidden;box-shadow:0 0 20px #000;margin-bottom:20px;position:relative;}
 #album-art img{width:100%;height:100%;opacity:0;position:absolute;top:0;left:0;transition:0.3s;}
-#album-art img.active{opacity:1;animation:rotateAlbumArt 3s linear infinite forwards;}
+#album-art.active img.active{opacity:1;animation:rotateAlbumArt 3s linear infinite forwards;}
 @keyframes rotateAlbumArt{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 #player-controls{display:flex;justify-content:space-around;}
 .button{background:#2a2a2a;padding:15px;border-radius:10px;cursor:pointer;transition:0.2s;}
@@ -31,10 +31,10 @@ body{font-family:Helvetica, Arial;background:#000;display:flex;justify-content:c
 <div id="player">
     <div id="album-art">
         <img src="https://files.catbox.moe/spjxpy.jpg" class="active" id="_1">
-        <img src="https://i.pinimg.com/736x/5b/8f/1f/5b8f1f97d79fc05f3d0b62a0a02f3673.jpg" id="_2">
-        <img src="https://i.pinimg.com/736x/8c/8f/44/8c8f44e342d3dfd68e16e21d0f4e57aa.jpg" id="_3">
-        <img src="https://i.pinimg.com/736x/33/11/aa/3311aa9b1d9d1cdd0f514d0b9924f0da.jpg" id="_4">
-        <img src="https://i.pinimg.com/736x/92/da/ab/92daab9fce7c2dc2d41a0f598c0db21b.jpg" id="_5">
+        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_2.jpg" id="_2">
+        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_3.jpg" id="_3">
+        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_4.jpg" id="_4">
+        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_5.jpg" id="_5">
     </div>
 
     <div id="player-track">
@@ -59,7 +59,7 @@ body{font-family:Helvetica, Arial;background:#000;display:flex;justify-content:c
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script>
 $(function(){
-    var albums = ['BTS','BTS','BTS','BTS','BTS']; // Album title fixed as BTS
+    var albums = ['BTS','BTS','BTS','BTS','BTS'];
     var trackNames = ['Hip Hop Pile','Outro: Do You Think It Makes Sense?','MIC Drop','Black Swan','Louder than Bombs'];
     var albumArtworks = ['_1','_2','_3','_4','_5'];
     var trackUrl = [
@@ -74,20 +74,23 @@ $(function(){
     var audio = new Audio(trackUrl[currIndex]);
 
     function updateTrackInfo(){
-        $('#album-name').text(albums[currIndex]); // always BTS
+        $('#album-name').text(albums[currIndex]);
         $('#track-name').text(trackNames[currIndex]);
         $('#album-art img').removeClass('active');
         $('#'+albumArtworks[currIndex]).addClass('active');
+        $('#album-art').removeClass('active'); // stop rotation
     }
 
     function playTrack(){
         audio.play();
         $('#play-pause i').attr('class','fas fa-pause');
+        $('#album-art').addClass('active'); // start rotation
     }
 
     function pauseTrack(){
         audio.pause();
         $('#play-pause i').attr('class','fas fa-play');
+        $('#album-art').removeClass('active'); // stop rotation
     }
 
     function nextTrack(){
@@ -105,9 +108,8 @@ $(function(){
     }
 
     $('#play-pause').click(function(){
-        if(audio.paused){ playTrack(); }else{ pauseTrack(); }
+        if(audio.paused){ playTrack(); } else { pauseTrack(); }
     });
-
     $('#play-next').click(nextTrack);
     $('#play-previous').click(prevTrack);
 

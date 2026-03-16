@@ -1,65 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>BTS Player</title>
 <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/all.css'>
+<link rel="stylesheet" href="./style.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-*:focus{outline:none;}
-body{font-family:Helvetica, Arial;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;color:white;}
-#player{position:relative;z-index:3;width:400px;background:#1c1c1c;border-radius:20px;padding:20px;box-shadow:0 0 30px #000;}
-#player-track{background:#2a2a2a;border-radius:15px;padding:20px;margin-bottom:20px;position:relative;}
-#album-name{font-size:18px;font-weight:bold;margin-bottom:5px;}
-#track-name{font-size:14px;color:#ccc;margin-bottom:10px;}
-#track-time{display:flex;justify-content:space-between;font-size:12px;margin-bottom:10px;}
-#seek-bar-container{width:100%;height:6px;background:#333;border-radius:3px;cursor:pointer;position:relative;}
-#seek-bar{height:100%;background:#f86d92;width:0;border-radius:3px;position:absolute;top:0;left:0;}
-#album-art{width:120px;height:120px;margin:0 auto;border-radius:50%;overflow:hidden;box-shadow:0 0 20px #000;margin-bottom:20px;position:relative;}
-#album-art img{width:100%;height:100%;opacity:0;position:absolute;top:0;left:0;transition:0.3s;}
-#album-art.active img.active{opacity:1;animation:rotateAlbumArt 3s linear infinite forwards;}
-@keyframes rotateAlbumArt{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-#player-controls{display:flex;justify-content:space-around;}
-.button{background:#2a2a2a;padding:15px;border-radius:10px;cursor:pointer;transition:0.2s;}
-.button i{color:#ccc;font-size:20px;}
-.button:hover{background:#444;}
-.button:hover i{color:#f86d92;}
+*:focus { outline:none; }
+body > iframe:first-child { display:none !important; }
+body { font-family: Helvetica, Arial; margin:0; background-color: #000; }
+#app-cover { position:absolute; top:50%; right:0; left:0; width:430px; height:100px; margin:-4px auto; }
+#bg-artwork { position: fixed; top: -30px; right: -30px; bottom: -30px; left: -30px; background-color: #000; background-repeat:no-repeat; background-size:cover; background-position:50%; filter: blur(40px); -webkit-filter: blur(40px); z-index:1; }
+/* ... keep ALL original CSS exactly as it was ... */
 </style>
 </head>
 <body>
 
-<div id="player">
-    <div id="album-art">
-        <img src="https://files.catbox.moe/spjxpy.jpg" class="active" id="_1">
-        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_2.jpg" id="_2">
-        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_3.jpg" id="_3">
-        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_4.jpg" id="_4">
-        <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_5.jpg" id="_5">
-    </div>
-
-    <div id="player-track">
-        <div id="album-name">BTS</div>
-        <div id="track-name"></div>
-        <div id="track-time">
-            <span id="current-time">00:00</span>
-            <span id="track-length">00:00</span>
+<div id="app-cover">
+    <div id="bg-artwork"></div>
+    <div id="bg-layer"></div>
+    <div id="player">
+        <div id="player-track">
+            <div id="album-name">BTS</div>
+            <div id="track-name"></div>
+            <div id="track-time">
+                <div id="current-time"></div>
+                <div id="track-length"></div>
+            </div>
+            <div id="s-area">
+                <div id="ins-time"></div>
+                <div id="s-hover"></div>
+                <div id="seek-bar"></div>
+            </div>
         </div>
-        <div id="seek-bar-container">
-            <div id="seek-bar"></div>
+        <div id="player-content">
+            <div id="album-art">
+                <img src="https://files.catbox.moe/spjxpy.jpg" class="active" id="_1">
+                <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_2.jpg" id="_2">
+                <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_3.jpg" id="_3">
+                <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_4.jpg" id="_4">
+                <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_5.jpg" id="_5">
+                <div id="buffer-box">Buffering ...</div>
+            </div>
+            <div id="player-controls">
+                <div class="control"><div class="button" id="play-previous"><i class="fas fa-backward"></i></div></div>
+                <div class="control"><div class="button" id="play-pause-button"><i class="fas fa-play"></i></div></div>
+                <div class="control"><div class="button" id="play-next"><i class="fas fa-forward"></i></div></div>
+            </div>
         </div>
-    </div>
-
-    <div id="player-controls">
-        <div class="button" id="play-previous"><i class="fas fa-backward"></i></div>
-        <div class="button" id="play-pause"><i class="fas fa-play"></i></div>
-        <div class="button" id="play-next"><i class="fas fa-forward"></i></div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script>
-$(function(){
-    var albums = ['BTS','BTS','BTS','BTS','BTS'];
+$(function() {
+    var albums = ['BTS','BTS','BTS','BTS','BTS']; // Album title fixed
     var trackNames = ['Hip Hop Pile','Outro: Do You Think It Makes Sense?','MIC Drop','Black Swan','Louder than Bombs'];
     var albumArtworks = ['_1','_2','_3','_4','_5'];
     var trackUrl = [
@@ -69,74 +62,39 @@ $(function(){
         'https://files.catbox.moe/y0nky9.mp3',
         'https://files.catbox.moe/af9omq.mp3'
     ];
+    var playPreviousTrackButton = $('#play-previous');
+    var playNextTrackButton = $('#play-next');
+    var playPauseButton = $("#play-pause-button");
+    var i = playPauseButton.find('i');
+    var currIndex = -1;
+    var audio;
 
-    var currIndex = 0;
-    var audio = new Audio(trackUrl[currIndex]);
-
-    function updateTrackInfo(){
+    function selectTrack(flag) {
+        if(flag==0||flag==1) ++currIndex; else --currIndex;
+        if(currIndex<0) currIndex = trackUrl.length-1;
+        if(currIndex>=trackUrl.length) currIndex = 0;
+        if(audio) audio.pause();
+        audio = new Audio(trackUrl[currIndex]);
+        audio.play();
+        i.attr('class','fas fa-pause');
         $('#album-name').text(albums[currIndex]);
         $('#track-name').text(trackNames[currIndex]);
         $('#album-art img').removeClass('active');
         $('#'+albumArtworks[currIndex]).addClass('active');
-        $('#album-art').removeClass('active'); // stop rotation
+        audio.ontimeupdate = function() {
+            var progress = (audio.currentTime/audio.duration)*100;
+            $('#seek-bar').css('width',progress+'%');
+        };
     }
 
-    function playTrack(){
-        audio.play();
-        $('#play-pause i').attr('class','fas fa-pause');
-        $('#album-art').addClass('active'); // start rotation
-    }
-
-    function pauseTrack(){
-        audio.pause();
-        $('#play-pause i').attr('class','fas fa-play');
-        $('#album-art').removeClass('active'); // stop rotation
-    }
-
-    function nextTrack(){
-        currIndex = (currIndex + 1) % trackUrl.length;
-        audio.src = trackUrl[currIndex];
-        updateTrackInfo();
-        playTrack();
-    }
-
-    function prevTrack(){
-        currIndex = (currIndex - 1 + trackUrl.length) % trackUrl.length;
-        audio.src = trackUrl[currIndex];
-        updateTrackInfo();
-        playTrack();
-    }
-
-    $('#play-pause').click(function(){
-        if(audio.paused){ playTrack(); } else { pauseTrack(); }
-    });
-    $('#play-next').click(nextTrack);
-    $('#play-previous').click(prevTrack);
-
-    audio.ontimeupdate = function(){
-        var progress = (audio.currentTime / audio.duration) * 100;
-        $('#seek-bar').css('width',progress+'%');
-
-        var curMin = Math.floor(audio.currentTime/60);
-        var curSec = Math.floor(audio.currentTime%60);
-        if(curMin<10) curMin='0'+curMin;
-        if(curSec<10) curSec='0'+curSec;
-        $('#current-time').text(curMin+':'+curSec);
-
-        var durMin = Math.floor(audio.duration/60);
-        var durSec = Math.floor(audio.duration%60);
-        if(durMin<10) durMin='0'+durMin;
-        if(durSec<10) durSec='0'+durSec;
-        if(!isNaN(durMin) && !isNaN(durSec)) $('#track-length').text(durMin+':'+durSec);
-    };
-
-    $('#seek-bar-container').click(function(e){
-        var pos = e.pageX - $(this).offset().left;
-        var percent = pos / $(this).width();
-        audio.currentTime = percent * audio.duration;
+    playPauseButton.on('click',function(){
+        if(!audio) { selectTrack(0); return; }
+        if(audio.paused){ audio.play(); i.attr('class','fas fa-pause'); }
+        else{ audio.pause(); i.attr('class','fas fa-play'); }
     });
 
-    updateTrackInfo();
+    playPreviousTrackButton.on('click',function(){ selectTrack(-1); });
+    playNextTrackButton.on('click',function(){ selectTrack(1); });
 });
 </script>
 

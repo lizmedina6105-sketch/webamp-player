@@ -37,22 +37,21 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0;
+  opacity: 1;
   transition: 0.3s;
 }
 #album-art.active img.active {
-  opacity: 1;
   animation: rotateAlbum 3s linear infinite;
 }
 @keyframes rotateAlbum { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
-#album-name { font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #f86d92; }
+#album-name { font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #fff; }
 #track-name { font-size: 14px; color: #fff; margin-bottom: 10px; }
-#track-time { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px; color:#ccc; }
+#track-time { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px; color:#fff; }
 #seek-bar-container { width: 100%; height: 6px; background: #333; border-radius: 3px; cursor: pointer; position: relative; margin-bottom: 15px; }
 #seek-bar { height: 100%; background: #f86d92; width: 0%; border-radius: 3px; position: absolute; top:0; left:0; }
 #player-controls { display: flex; justify-content: space-around; }
 .button { background:#222; padding:15px; border-radius:10px; cursor:pointer; transition:0.2s; }
-.button i { color:#ccc; font-size:20px; }
+.button i { color:#d6dee7; font-size:20px; }
 .button:hover i { color:#f86d92; }
 </style>
 </head>
@@ -60,11 +59,7 @@ body {
 
 <div id="player">
   <div id="album-art">
-    <img src="https://files.catbox.moe/spjxpy.jpg" class="active" id="_1">
-    <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_2.jpg" id="_2">
-    <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_3.jpg" id="_3">
-    <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_4.jpg" id="_4">
-    <img src="https://raw.githubusercontent.com/himalayasingh/music-player-1/master/img/_5.jpg" id="_5">
+    <img src="https://files.catbox.moe/spjxpy.jpg" class="active">
   </div>
   <div id="album-name">BTS</div>
   <div id="track-name"></div>
@@ -84,7 +79,6 @@ body {
 <script>
 $(function(){
   var trackNames = ['Hip Hop Pile','Outro: Do You Think It Makes Sense?','MIC Drop','Black Swan','Louder than Bombs'];
-  var albumArtworks = ['_1','_2','_3','_4','_5'];
   var trackUrl = [
     'https://files.catbox.moe/r0ffvt.mp3',
     'https://files.catbox.moe/1ano71.mp3',
@@ -97,9 +91,6 @@ $(function(){
 
   function updateTrack(){
     $('#track-name').text(trackNames[currIndex]);
-    $('#album-art img').removeClass('active');
-    $('#'+albumArtworks[currIndex]).addClass('active');
-    $('#album-art').removeClass('active'); // stop rotation until play
   }
 
   function playTrack(){
